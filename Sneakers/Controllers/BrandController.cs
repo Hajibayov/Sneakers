@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Sneakers.Models.ViewModels;
+using Sneakers.Models.DTO;
 using Sneakers.Services;
 
 namespace Sneakers.Controllers

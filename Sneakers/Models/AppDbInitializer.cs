@@ -30,7 +30,16 @@ namespace Sneakers.Models
                         Email = "knaghiyev@gmail.com",
                         PhoneNumber = "0553523595",
                         WorkEnter = System.DateTime.Now.AddDays(-10)
-                    });
+                    },
+                     new EMPLOYEE()
+                     {
+                         Name = "Xadica",
+                         Surname = "Allahverdi",
+                         Email = "xadica@gmail.com",
+                         PhoneNumber = "0553523595",
+                         WorkEnter = System.DateTime.Now.AddDays(-10)
+                     });
+
                     context.SaveChanges();
                 }
             }

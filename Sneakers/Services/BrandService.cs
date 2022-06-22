@@ -1,5 +1,5 @@
 ﻿using Sneakers.Models;
-using Sneakers.Models.ViewModels;
+using Sneakers.Models.DTO;
 
 namespace Sneakers.Services
 {
@@ -16,7 +16,6 @@ namespace Sneakers.Services
         {
             var _brand = new SNEAKERS_BRAND()
             {
-                Id = brand.Id,
                 Brand = brand.Brand
             };
             _context.SNEAKERS_BRAND.Add(_brand);

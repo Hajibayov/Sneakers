@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Sneakers.Models.ViewModels
+namespace Sneakers.Models.DTO
 {
     public class BrandVM
     {
