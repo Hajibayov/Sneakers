@@ -8,8 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Sneakers.Extensions;
+using Sneakers.Infrastructure;
+using Sneakers.Infrastructure.Repository;
 using Sneakers.Models;
-using Sneakers.Services;
+using Sneakers.Services.Implementation;
+using Sneakers.Services.Interface;
+using Sneakers.Validations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +47,16 @@ namespace Sneakers
 
             //Configure Services
 
-            services.AddTransient<BrandService>();
+            services.AddAutoMapper(x => x.AddProfile(new MappingEntity()));
+            services.ConfigureCors();
+            services.ConfigureJWTService();
+            services.ConfigureLoggerService();
+
+            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+            services.AddTransient<IValidation, Validation>();
+            services.AddTransient<IJwtHandler, JwtHandler>();
+            services.AddTransient<IBrandService, BrandService>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sneakers", Version = "v1" });
@@ -59,11 +73,13 @@ namespace Sneakers
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sneakers v1"));
             }
 
+            app.ConfigureCustomExceptionMiddleware();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCookiePolicy();
 
             app.UseEndpoints(endpoints =>
             {

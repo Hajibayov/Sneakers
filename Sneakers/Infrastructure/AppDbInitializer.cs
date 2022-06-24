@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Sneakers.Models;
 using System.Linq;
 
-namespace Sneakers.Models
+namespace Sneakers.Infrastructure
 {
     public class AppDbInitializer
     {
@@ -13,13 +14,13 @@ namespace Sneakers.Models
                 var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
                 if (!context.EMPLOYEE.Any())
                 {
-                    context.EMPLOYEE.AddRange(new Models.EMPLOYEE()
+                    context.EMPLOYEE.AddRange(new EMPLOYEE()
                     {
-                       Name = "Sarkhan",
-                       Surname= "Hajibayov",
-                       Email = "shacibyov@gmail.com",
-                       PhoneNumber = "0553523596",
-                       WorkEnter = System.DateTime.Now.AddDays(-110)
+                        Name = "Sarkhan",
+                        Surname = "Hajibayov",
+                        Email = "shacibyov@gmail.com",
+                        PhoneNumber = "0553523596",
+                        WorkEnter = System.DateTime.Now.AddDays(-110)
 
 
                     },
