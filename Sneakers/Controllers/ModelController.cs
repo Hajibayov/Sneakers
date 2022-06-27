@@ -1,35 +1,29 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Sneakers.DTO.HelperModels;
 using Sneakers.DTO.HelperModels.Const;
 using Sneakers.DTO.RequestModel;
 using Sneakers.DTO.ResponseModels.Main;
 using Sneakers.Logging;
-using Sneakers.Services.Implementation;
 using Sneakers.Services.Interface;
 using Sneakers.Validations;
 using System;
-using System.Diagnostics;
 
 namespace Sneakers.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BrandController : ControllerBase
+    public class ModelController : ControllerBase    
     {
-        public readonly IBrandService _brandService;
+        public readonly IModelService _modelService;
         private readonly ILoggerManager _logger;
         private readonly IValidation _validation;
 
-        public BrandController(IBrandService brandService, ILoggerManager logger, IValidation validation)
+        public ModelController(IModelService modelService, ILoggerManager logger, IValidation validation)
         {
-            _brandService = brandService;
+            _modelService = modelService;
             _logger = logger;
             _validation = validation;
         }
-
-        [HttpPost("add-brand")]
-        public IActionResult AddBrand([FromBody] BrandVM model)
+        [HttpPost("add-model")]
+        public IActionResult AddBrand([FromBody] ModelVM model)
         {
             ResponseSimple response = new ResponseSimple();
             //response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
@@ -40,7 +34,7 @@ namespace Sneakers.Controllers
 
             try
             {
-                _brandService.AddBrand(model, ref errorCode, ref message, response.TraceID);
+                _modelService.AddModel(model, ref errorCode, ref message, response.TraceID);
                 if (errorCode != 0)
                 {
                     response.Status.ErrCode = errorCode;
@@ -49,7 +43,7 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    response.Status.Message = "Yeni brand yaradıldı.";
+                    response.Status.Message = "Yeni model yaradıldı.";
                 }
             }
             catch (Exception ex)
@@ -62,9 +56,8 @@ namespace Sneakers.Controllers
             return Ok(response);
         }
 
-
-        [HttpPost("update_brand")]
-        public IActionResult UpdateBrand([FromBody] BrandVM model, int id)
+        [HttpPost("update_model")]
+        public IActionResult UpdateModel([FromBody] ModelVM model, int id)
         {
             ResponseSimple response = new ResponseSimple();
             response.Status = new Status();
@@ -77,7 +70,7 @@ namespace Sneakers.Controllers
 
             try
             {
-                _brandService.UpdateBrand(model, id, ref errorCode, ref message, response.TraceID);
+                _modelService.UpdateModel(model, id, ref errorCode, ref message, response.TraceID);
                 if (errorCode != 0)
                 {
                     response.Status.ErrCode = errorCode;
@@ -99,14 +92,14 @@ namespace Sneakers.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("delete_brand")]
-        public IActionResult DeleteBrand(int id)
+        [HttpDelete("delete_model")]
+        public IActionResult DeleteModel(int id)
         {
 
 
             ResponseSimple response = new ResponseSimple();
             response.Status = new Status();
-            response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
+          //  response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
 
             int errorCode = 0;
             string message = null;
@@ -115,7 +108,7 @@ namespace Sneakers.Controllers
 
             try
             {
-                _brandService.DeleteBrand(id, ref errorCode, ref brandExists, ref message, response.TraceID);
+                _modelService.DeleteModel(id, ref errorCode, ref brandExists, ref message, response.TraceID);
                 if (errorCode != 0 || errorCode == 46)
                 {
                     response.Status.ErrCode = errorCode;
@@ -130,7 +123,7 @@ namespace Sneakers.Controllers
                     }
                     else
                     {
-                        response.Status.Message = "Brand silindi.";
+                        response.Status.Message = "Model silindi.";
                     }
                 }
             }
@@ -145,8 +138,3 @@ namespace Sneakers.Controllers
         }
     }
 }
-
-
-
-
-

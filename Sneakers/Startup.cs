@@ -56,6 +56,14 @@ namespace Sneakers
             services.AddTransient<IValidation, Validation>();
             services.AddTransient<IJwtHandler, JwtHandler>();
             services.AddTransient<IBrandService, BrandService>();
+            services.AddTransient<ISizeService, SizeService>();
+            services.AddTransient<ITypeService, TypeService>();
+            services.AddTransient<IModelService, ModelService>();
+            services.AddTransient<IWarehouseService, WarehouseService>();
+            services.AddTransient<IEmployeeService, EmployeeService>();
+            services.AddTransient<ISneakersService, SneakersService>();
+
+
 
             services.AddSwaggerGen(c =>
             {

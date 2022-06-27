@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Sneakers.DTO.HelperModels;
 using Sneakers.DTO.HelperModels.Const;
 using Sneakers.DTO.RequestModel;
 using Sneakers.DTO.ResponseModels.Main;
 using Sneakers.Logging;
-using Sneakers.Services.Implementation;
 using Sneakers.Services.Interface;
 using Sneakers.Validations;
 using System;
@@ -13,23 +11,24 @@ using System.Diagnostics;
 
 namespace Sneakers.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BrandController : ControllerBase
+    public class EmployeeController : ControllerBase
     {
-        public readonly IBrandService _brandService;
+
+        public readonly IEmployeeService _employeeService;
         private readonly ILoggerManager _logger;
         private readonly IValidation _validation;
 
-        public BrandController(IBrandService brandService, ILoggerManager logger, IValidation validation)
+
+        public EmployeeController(IEmployeeService employeeService, ILoggerManager logger, IValidation validation)
         {
-            _brandService = brandService;
+            _employeeService = employeeService;
             _logger = logger;
             _validation = validation;
         }
 
-        [HttpPost("add-brand")]
-        public IActionResult AddBrand([FromBody] BrandVM model)
+
+        [HttpPost("add-employee")]
+        public IActionResult AddEmployeee([FromBody] EmployeeVM employee)
         {
             ResponseSimple response = new ResponseSimple();
             //response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
@@ -40,7 +39,7 @@ namespace Sneakers.Controllers
 
             try
             {
-                _brandService.AddBrand(model, ref errorCode, ref message, response.TraceID);
+                _employeeService.AddEmployee(employee, ref errorCode, ref message, response.TraceID);
                 if (errorCode != 0)
                 {
                     response.Status.ErrCode = errorCode;
@@ -49,7 +48,7 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    response.Status.Message = "Yeni brand yaradıldı.";
+                    response.Status.Message = "Yeni işçi yaradıldı.";
                 }
             }
             catch (Exception ex)
@@ -62,9 +61,8 @@ namespace Sneakers.Controllers
             return Ok(response);
         }
 
-
-        [HttpPost("update_brand")]
-        public IActionResult UpdateBrand([FromBody] BrandVM model, int id)
+        [HttpPost("update_employee")]
+        public IActionResult UpdateEmployee([FromBody] EmployeeVM employee, int id)
         {
             ResponseSimple response = new ResponseSimple();
             response.Status = new Status();
@@ -77,7 +75,7 @@ namespace Sneakers.Controllers
 
             try
             {
-                _brandService.UpdateBrand(model, id, ref errorCode, ref message, response.TraceID);
+                _employeeService.UpdateEmployee(employee, id, ref errorCode, ref message, response.TraceID);
                 if (errorCode != 0)
                 {
                     response.Status.ErrCode = errorCode;
@@ -98,24 +96,23 @@ namespace Sneakers.Controllers
             }
             return Ok(response);
         }
-
-        [HttpDelete("delete_brand")]
+        [HttpDelete("delete_employee")]
         public IActionResult DeleteBrand(int id)
         {
 
 
             ResponseSimple response = new ResponseSimple();
             response.Status = new Status();
-            response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
+         //   response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
 
             int errorCode = 0;
             string message = null;
-            bool brandExists = false;
+            bool employeeExists = false;
 
 
             try
             {
-                _brandService.DeleteBrand(id, ref errorCode, ref brandExists, ref message, response.TraceID);
+                _employeeService.DeleteEmployee(id, ref errorCode, ref employeeExists, ref message, response.TraceID);
                 if (errorCode != 0 || errorCode == 46)
                 {
                     response.Status.ErrCode = errorCode;
@@ -124,13 +121,13 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    if (brandExists == true)
+                    if (employeeExists == true)
                     {
                         response.Status.Message = message;
                     }
                     else
                     {
-                        response.Status.Message = "Brand silindi.";
+                        response.Status.Message = "İşçi silindi.";
                     }
                 }
             }
@@ -145,8 +142,3 @@ namespace Sneakers.Controllers
         }
     }
 }
-
-
-
-
-

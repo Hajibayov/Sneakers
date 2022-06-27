@@ -11,28 +11,28 @@ using System.Linq;
 
 namespace Sneakers.Services.Implementation
 {
-    public class BrandService : IBrandService
+    public class EmployeeService:IEmployeeService
     {
-
         private AppDbContext _context;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
-        private readonly IRepository<SNEAKERS_BRAND> _brands;
-        public BrandService(AppDbContext context, ILoggerManager logger, IMapper mapper, IRepository<SNEAKERS_BRAND> brands)
+        private readonly IRepository<EMPLOYEE> _employees;
+
+        public EmployeeService(AppDbContext context, ILoggerManager logger, IMapper mapper, IRepository<EMPLOYEE> employees)
         {
             _context = context;
             _logger = logger;
-            _brands = brands;
+            _employees = employees;
             _mapper = mapper;
         }
 
-        public void AddBrand(BrandVM model, ref int errorCode, ref string message, string traceId)
+        public void AddEmployee(EmployeeVM employee, ref int errorCode, ref string message, string traceId)
         {
             try
             {
-                SNEAKERS_BRAND pos = _mapper.Map<SNEAKERS_BRAND>(model);
-                _brands.Insert(pos);
-                _brands.Save();
+                EMPLOYEE emp = _mapper.Map<EMPLOYEE>(employee);
+                _employees.Insert(emp);
+                _employees.Save();
             }
             catch (Exception ex)
             {
@@ -41,16 +41,17 @@ namespace Sneakers.Services.Implementation
                 _logger.LogError($"BrandService AddPosition : {traceId}" + $"{ex}");
             }
         }
-        public void UpdateBrand(BrandVM model, int id, ref int errorCode, ref string message, string traceId)
+
+        public void UpdateEmployee(EmployeeVM employee, int id, ref int errorCode, ref string message, string traceId)
         {
             try
             {
-                SNEAKERS_BRAND oldData = _brands.AllQuery.AsNoTracking().FirstOrDefault(x => x.Id == id);
-                SNEAKERS_BRAND newData = _mapper.Map<SNEAKERS_BRAND>(model);
+                EMPLOYEE oldData = _employees.AllQuery.AsNoTracking().FirstOrDefault(x => x.Id == id);
+                EMPLOYEE newData = _mapper.Map<EMPLOYEE>(employee);
                 newData.Id = id;
                 oldData = newData;
-                _brands.Update(oldData);
-                _brands.Save();
+                _employees.Update(oldData);
+                _employees.Save();
             }
             catch (Exception ex)
             {
@@ -60,19 +61,19 @@ namespace Sneakers.Services.Implementation
             }
         }
 
-        public void DeleteBrand(int id, ref int errorCode, ref bool brandExists, ref string message, string traceId)
+        public void DeleteEmployee(int id, ref int errorCode, ref bool brandExists, ref string message, string traceId)
         {
 
-            SNEAKERS_BRAND brand = _brands.AllQuery.FirstOrDefault(n => n.Id == id);
+            EMPLOYEE employee = _employees.AllQuery.FirstOrDefault(n => n.Id == id);
 
             try
             {
-                if (brand != null)
+                if (employee != null)
                 {
 
-                    _brands.Remove(brand);
-                    _brands.Save();
-                    message = "Bu brand uğurla silindi.";
+                    _employees.Remove(employee);
+                    _employees.Save();
+                    message = "Bu işçi uğurla silindi.";
 
                 }
                 else
@@ -86,6 +87,5 @@ namespace Sneakers.Services.Implementation
                 _logger.LogError($"PositionService DeletePosition : {traceId}" + $"{ex}");
             }
         }
-
     }
 }

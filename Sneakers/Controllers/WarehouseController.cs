@@ -1,35 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Sneakers.DTO.HelperModels;
 using Sneakers.DTO.HelperModels.Const;
 using Sneakers.DTO.RequestModel;
 using Sneakers.DTO.ResponseModels.Main;
 using Sneakers.Logging;
-using Sneakers.Services.Implementation;
 using Sneakers.Services.Interface;
 using Sneakers.Validations;
 using System;
-using System.Diagnostics;
 
 namespace Sneakers.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BrandController : ControllerBase
+    public class WarehouseController : ControllerBase
     {
-        public readonly IBrandService _brandService;
+
+        public readonly IWarehouseService _warehouseService;
         private readonly ILoggerManager _logger;
         private readonly IValidation _validation;
 
-        public BrandController(IBrandService brandService, ILoggerManager logger, IValidation validation)
+        public WarehouseController(IWarehouseService warehouseService, ILoggerManager logger, IValidation validation)
         {
-            _brandService = brandService;
+            _warehouseService = warehouseService;
             _logger = logger;
             _validation = validation;
         }
 
-        [HttpPost("add-brand")]
-        public IActionResult AddBrand([FromBody] BrandVM model)
+        [HttpPost("add-warehouse")]
+        public IActionResult AddWarehouse([FromBody] WarehouseVM ware)
         {
             ResponseSimple response = new ResponseSimple();
             //response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
@@ -40,7 +36,7 @@ namespace Sneakers.Controllers
 
             try
             {
-                _brandService.AddBrand(model, ref errorCode, ref message, response.TraceID);
+                _warehouseService.AddWarehouse(ware, ref errorCode, ref message, response.TraceID);
                 if (errorCode != 0)
                 {
                     response.Status.ErrCode = errorCode;
@@ -49,22 +45,21 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    response.Status.Message = "Yeni brand yaradıldı.";
+                    response.Status.Message = "Yeni anbar yaradıldı.";
                 }
             }
             catch (Exception ex)
             {
                 response.Status.ErrCode = ErrorCode.SYSTEM;
                 response.Status.Message = message;
-                _logger.LogError($"BrandController AddBrand : {response.TraceID}" + $"{ex}");
+                _logger.LogError($"SizeController AddSize : {response.TraceID}" + $"{ex}");
                 return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, response);
             }
             return Ok(response);
         }
 
-
-        [HttpPost("update_brand")]
-        public IActionResult UpdateBrand([FromBody] BrandVM model, int id)
+        [HttpPost("update_warehouse")]
+        public IActionResult UpdateWarehouse([FromBody] WarehouseVM type, int id)
         {
             ResponseSimple response = new ResponseSimple();
             response.Status = new Status();
@@ -77,7 +72,7 @@ namespace Sneakers.Controllers
 
             try
             {
-                _brandService.UpdateBrand(model, id, ref errorCode, ref message, response.TraceID);
+                _warehouseService.UpdateWarehouse(type, id, ref errorCode, ref message, response.TraceID);
                 if (errorCode != 0)
                 {
                     response.Status.ErrCode = errorCode;
@@ -93,29 +88,30 @@ namespace Sneakers.Controllers
             {
                 response.Status.ErrCode = ErrorCode.SYSTEM;
                 response.Status.Message = message;
-                _logger.LogError($"PositionController UpdatePosition : {response.TraceID}" + $"{ex}");
+
+                //?
+                _logger.LogError($"SizeController UpdateSize : {response.TraceID}" + $"{ex}");
                 return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, response);
             }
             return Ok(response);
         }
-
-        [HttpDelete("delete_brand")]
-        public IActionResult DeleteBrand(int id)
+        [HttpDelete("delete_warehouse")]
+        public IActionResult DeleteWarehouse(int id)
         {
 
 
             ResponseSimple response = new ResponseSimple();
             response.Status = new Status();
-            response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
+           // response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
 
             int errorCode = 0;
             string message = null;
-            bool brandExists = false;
+            bool typeExists = false;
 
 
             try
             {
-                _brandService.DeleteBrand(id, ref errorCode, ref brandExists, ref message, response.TraceID);
+                _warehouseService.DeleteWarehouse(id, ref errorCode, ref typeExists, ref message, response.TraceID);
                 if (errorCode != 0 || errorCode == 46)
                 {
                     response.Status.ErrCode = errorCode;
@@ -124,13 +120,13 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    if (brandExists == true)
+                    if (typeExists == true)
                     {
                         response.Status.Message = message;
                     }
                     else
                     {
-                        response.Status.Message = "Brand silindi.";
+                        response.Status.Message = "Anbar silindi.";
                     }
                 }
             }
@@ -138,15 +134,10 @@ namespace Sneakers.Controllers
             {
                 response.Status.ErrCode = ErrorCode.SYSTEM;
                 response.Status.Message = message;
-                _logger.LogError($"PositionController DeletePosition : {response.TraceID}" + $"{ex}");
+                _logger.LogError($"SizeController DeleteSize : {response.TraceID}" + $"{ex}");
                 return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, response);
             }
             return Ok(response);
         }
     }
 }
-
-
-
-
-

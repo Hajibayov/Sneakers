@@ -11,46 +11,47 @@ using System.Linq;
 
 namespace Sneakers.Services.Implementation
 {
-    public class BrandService : IBrandService
+    public class SizeService : ISizeService
     {
 
         private AppDbContext _context;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
-        private readonly IRepository<SNEAKERS_BRAND> _brands;
-        public BrandService(AppDbContext context, ILoggerManager logger, IMapper mapper, IRepository<SNEAKERS_BRAND> brands)
+        private readonly IRepository<SIZE> _sizes;
+
+        public SizeService(AppDbContext context, ILoggerManager logger, IMapper mapper, IRepository<SIZE> size)
         {
             _context = context;
             _logger = logger;
-            _brands = brands;
+            _sizes = size;
             _mapper = mapper;
         }
-
-        public void AddBrand(BrandVM model, ref int errorCode, ref string message, string traceId)
+        public void AddSize(SizeVM size, ref int errorCode, ref string message, string traceId)
         {
             try
             {
-                SNEAKERS_BRAND pos = _mapper.Map<SNEAKERS_BRAND>(model);
-                _brands.Insert(pos);
-                _brands.Save();
+                SIZE siz = _mapper.Map<SIZE>(size);
+                _sizes.Insert(siz);
+                _sizes.Save();
             }
             catch (Exception ex)
             {
                 errorCode = ErrorCode.DB;
-                message = "DB create brand error";
-                _logger.LogError($"BrandService AddPosition : {traceId}" + $"{ex}");
+                message = "DB create size error";
+                _logger.LogError($"PositionService CreatePosition : {traceId}" + $"{ex}");
             }
         }
-        public void UpdateBrand(BrandVM model, int id, ref int errorCode, ref string message, string traceId)
+
+        public void UpdateSize(SizeVM size, int id, ref int errorCode, ref string message, string traceId)
         {
             try
             {
-                SNEAKERS_BRAND oldData = _brands.AllQuery.AsNoTracking().FirstOrDefault(x => x.Id == id);
-                SNEAKERS_BRAND newData = _mapper.Map<SNEAKERS_BRAND>(model);
+                SIZE oldData = _sizes.AllQuery.AsNoTracking().FirstOrDefault(x => x.Id == id);
+                SIZE newData = _mapper.Map<SIZE>(size);
                 newData.Id = id;
                 oldData = newData;
-                _brands.Update(oldData);
-                _brands.Save();
+                _sizes.Update(oldData);
+                _sizes.Save();
             }
             catch (Exception ex)
             {
@@ -60,19 +61,19 @@ namespace Sneakers.Services.Implementation
             }
         }
 
-        public void DeleteBrand(int id, ref int errorCode, ref bool brandExists, ref string message, string traceId)
+        public void DeleteSize(int id, ref int errorCode, ref bool sizeExists, ref string message, string traceId)
         {
 
-            SNEAKERS_BRAND brand = _brands.AllQuery.FirstOrDefault(n => n.Id == id);
+            SIZE size = _sizes.AllQuery.FirstOrDefault(n => n.Id == id);
 
             try
             {
-                if (brand != null)
+                if (size != null)
                 {
 
-                    _brands.Remove(brand);
-                    _brands.Save();
-                    message = "Bu brand uğurla silindi.";
+                    _sizes.Remove(size);
+                    _sizes.Save();
+                    message = "Bu size uğurla silindi.";
 
                 }
                 else
@@ -86,6 +87,5 @@ namespace Sneakers.Services.Implementation
                 _logger.LogError($"PositionService DeletePosition : {traceId}" + $"{ex}");
             }
         }
-
     }
 }

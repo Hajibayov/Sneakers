@@ -15,21 +15,21 @@ namespace Sneakers.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandController : ControllerBase
+    public class SizeController : ControllerBase
     {
-        public readonly IBrandService _brandService;
+        public readonly ISizeService _sizeService;
         private readonly ILoggerManager _logger;
         private readonly IValidation _validation;
 
-        public BrandController(IBrandService brandService, ILoggerManager logger, IValidation validation)
+        public SizeController(ISizeService sizeService, ILoggerManager logger, IValidation validation)
         {
-            _brandService = brandService;
+            _sizeService = sizeService;
             _logger = logger;
             _validation = validation;
         }
 
-        [HttpPost("add-brand")]
-        public IActionResult AddBrand([FromBody] BrandVM model)
+        [HttpPost("add-size")]
+        public IActionResult AddSize([FromBody] SizeVM size)
         {
             ResponseSimple response = new ResponseSimple();
             //response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
@@ -40,7 +40,7 @@ namespace Sneakers.Controllers
 
             try
             {
-                _brandService.AddBrand(model, ref errorCode, ref message, response.TraceID);
+                _sizeService.AddSize(size, ref errorCode, ref message, response.TraceID);
                 if (errorCode != 0)
                 {
                     response.Status.ErrCode = errorCode;
@@ -49,22 +49,20 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    response.Status.Message = "Yeni brand yaradıldı.";
+                    response.Status.Message = "Yeni size yaradıldı.";
                 }
             }
             catch (Exception ex)
             {
                 response.Status.ErrCode = ErrorCode.SYSTEM;
                 response.Status.Message = message;
-                _logger.LogError($"BrandController AddBrand : {response.TraceID}" + $"{ex}");
+                _logger.LogError($"SizeController AddSize : {response.TraceID}" + $"{ex}");
                 return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, response);
             }
             return Ok(response);
         }
-
-
-        [HttpPost("update_brand")]
-        public IActionResult UpdateBrand([FromBody] BrandVM model, int id)
+        [HttpPost("update_size")]
+        public IActionResult UpdateSize([FromBody] SizeVM size, int id)
         {
             ResponseSimple response = new ResponseSimple();
             response.Status = new Status();
@@ -77,7 +75,7 @@ namespace Sneakers.Controllers
 
             try
             {
-                _brandService.UpdateBrand(model, id, ref errorCode, ref message, response.TraceID);
+                _sizeService.UpdateSize(size, id, ref errorCode, ref message, response.TraceID);
                 if (errorCode != 0)
                 {
                     response.Status.ErrCode = errorCode;
@@ -93,14 +91,16 @@ namespace Sneakers.Controllers
             {
                 response.Status.ErrCode = ErrorCode.SYSTEM;
                 response.Status.Message = message;
-                _logger.LogError($"PositionController UpdatePosition : {response.TraceID}" + $"{ex}");
+
+                //?
+                _logger.LogError($"SizeController UpdateSize : {response.TraceID}" + $"{ex}");
                 return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, response);
             }
             return Ok(response);
         }
 
-        [HttpDelete("delete_brand")]
-        public IActionResult DeleteBrand(int id)
+        [HttpDelete("delete_size")]
+        public IActionResult DeleteSize(int id)
         {
 
 
@@ -110,12 +110,12 @@ namespace Sneakers.Controllers
 
             int errorCode = 0;
             string message = null;
-            bool brandExists = false;
+            bool sizeExists = false;
 
 
             try
             {
-                _brandService.DeleteBrand(id, ref errorCode, ref brandExists, ref message, response.TraceID);
+                _sizeService.DeleteSize(id, ref errorCode, ref sizeExists, ref message, response.TraceID);
                 if (errorCode != 0 || errorCode == 46)
                 {
                     response.Status.ErrCode = errorCode;
@@ -124,13 +124,13 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    if (brandExists == true)
+                    if (sizeExists == true)
                     {
                         response.Status.Message = message;
                     }
                     else
                     {
-                        response.Status.Message = "Brand silindi.";
+                        response.Status.Message = "Size silindi.";
                     }
                 }
             }
@@ -138,15 +138,10 @@ namespace Sneakers.Controllers
             {
                 response.Status.ErrCode = ErrorCode.SYSTEM;
                 response.Status.Message = message;
-                _logger.LogError($"PositionController DeletePosition : {response.TraceID}" + $"{ex}");
+                _logger.LogError($"SizeController DeleteSize : {response.TraceID}" + $"{ex}");
                 return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, response);
             }
             return Ok(response);
         }
     }
 }
-
-
-
-
-
