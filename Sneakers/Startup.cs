@@ -39,6 +39,12 @@ namespace Sneakers
         {
 
             services.AddControllers();
+            services.AddCors(options => options.AddPolicy(name: "BrandOrigins",
+                policy=>
+                {
+                    policy.WithOrigins("http://localhost:49403").AllowAnyMethod().AllowAnyHeader();
+                }
+                ));
 
 
             services.AddDbContext<AppDbContext>(options =>
@@ -88,6 +94,7 @@ namespace Sneakers
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCookiePolicy();
+            app.UseCors("BrandOrigins");
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,15 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Sneakers.DTO.HelperModels;
 using Sneakers.DTO.HelperModels.Const;
 using Sneakers.DTO.RequestModel;
 using Sneakers.DTO.ResponseModels.Main;
 using Sneakers.Logging;
+using Sneakers.Models;
 using Sneakers.Services.Implementation;
 using Sneakers.Services.Interface;
 using Sneakers.Validations;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Sneakers.Controllers
 {
@@ -20,12 +24,21 @@ namespace Sneakers.Controllers
         public readonly IBrandService _brandService;
         private readonly ILoggerManager _logger;
         private readonly IValidation _validation;
+        private readonly AppDbContext _context;
 
-        public BrandController(IBrandService brandService, ILoggerManager logger, IValidation validation)
+        public BrandController(IBrandService brandService, ILoggerManager logger, IValidation validation, AppDbContext context)
         {
             _brandService = brandService;
             _logger = logger;
             _validation = validation;
+            _context = context;
+        }
+
+        [HttpGet]
+
+        public async Task<ActionResult<List<SNEAKERS_BRAND>>> GetAllBrands()
+        {
+            return Ok(await _context.SNEAKERS_BRAND.ToListAsync());
         }
 
         [HttpPost("add-brand")]
