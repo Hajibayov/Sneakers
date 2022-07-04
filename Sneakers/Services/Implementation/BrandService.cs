@@ -7,31 +7,39 @@ using Sneakers.Logging;
 using Sneakers.Models;
 using Sneakers.Services.Interface;
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using TeamControlV2.DTO.ResponseModels.Inner;
 
 namespace Sneakers.Services.Implementation
 {
     public class BrandService : IBrandService
     {
-
+        AppConfiguration config = new AppConfiguration();
         private AppDbContext _context;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
         private readonly IRepository<SNEAKERS_BRAND> _brands;
-        public BrandService(AppDbContext context, ILoggerManager logger, IMapper mapper, IRepository<SNEAKERS_BRAND> brands)
+        private readonly ISqlService _sqlService;
+
+
+        public BrandService(AppDbContext context, ILoggerManager logger, IMapper mapper, IRepository<SNEAKERS_BRAND> brands, ISqlService sqlService)
         {
             _context = context;
             _logger = logger;
             _brands = brands;
             _mapper = mapper;
+            _sqlService = sqlService;
+
         }
 
         public void AddBrand(BrandVM model, ref int errorCode, ref string message, string traceId)
         {
             try
             {
-                SNEAKERS_BRAND pos = _mapper.Map<SNEAKERS_BRAND>(model);
-                _brands.Insert(pos);
+                SNEAKERS_BRAND brd = _mapper.Map<SNEAKERS_BRAND>(model);
+                _brands.Insert(brd);
                 _brands.Save();
             }
             catch (Exception ex)
@@ -41,7 +49,77 @@ namespace Sneakers.Services.Implementation
                 _logger.LogError($"BrandService AddPosition : {traceId}" + $"{ex}");
             }
         }
-        public void UpdateBrand(BrandVM model, int id, ref int errorCode, ref string message, string traceId)
+
+        public List<BRAND_VIEW_MODEL> GetBrands(int skip, int limit, ref decimal totalCount, bool isExport, ref int errorCode, ref string message, string traceId)
+        {
+            List<BRAND_VIEW_MODEL> response = new List<BRAND_VIEW_MODEL>();
+
+            try
+            {
+                using (SqlConnection con = new SqlConnection(config.ConnectionString))
+                {
+                    SqlCommand cmd;
+                    using (cmd = con.CreateCommand())
+                    {
+                        con.Open();
+
+                        cmd.CommandText = _sqlService.Brands(false, isExport, limit, skip);
+                        SqlDataReader rdr = cmd.ExecuteReader();
+
+                        while (rdr.Read())
+                        {
+                            BRAND_VIEW_MODEL brand_view_model = new BRAND_VIEW_MODEL()
+                            {
+                                Id = (int)rdr["Id"],
+                                Brand = rdr["Brand"].ToString(),
+                               
+                            };
+                            response.Add(brand_view_model);
+                        }
+                        rdr.Close();
+                        cmd = con.CreateCommand();
+                        if (!isExport)
+                        {
+                            cmd.CommandText = _sqlService.Brands(true, false, limit, skip);
+
+                            rdr = cmd.ExecuteReader();
+
+                            while (rdr.Read())
+                            {
+                                totalCount = (int)rdr["totalCount"];
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                errorCode = ErrorCode.DB;
+                message = "DB get positions error";
+                _logger.LogError($"PositionService GetPositions : {traceId}" + $"{ex}");
+            }
+            return response;
+        }
+
+        public BrandVM GetBrand(int id, ref int errorCode, ref string message, string traceId)
+        {
+            BrandVM result = new BrandVM();
+            try
+            {
+                SNEAKERS_BRAND brand = _brands.AllQuery.FirstOrDefault(x => x.Id == id);
+                result = _mapper.Map<BrandVM>(brand);
+            }
+            catch (Exception ex)
+            {
+                errorCode = ErrorCode.DB;
+                message = "DB get position error";
+                _logger.LogError($"PositionService GetPosition : {traceId}" + $"{ex}");
+            }
+            return result;
+
+        }
+            public void UpdateBrand(BrandVM model, int id, ref int errorCode, ref string message, string traceId)
         {
             try
             {

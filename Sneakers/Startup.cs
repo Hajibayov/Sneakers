@@ -68,7 +68,7 @@ namespace Sneakers
             services.AddTransient<IWarehouseService, WarehouseService>();
             services.AddTransient<IEmployeeService, EmployeeService>();
             services.AddTransient<ISneakersService, SneakersService>();
-
+            services.AddTransient<ISqlService, SqlService>();
 
 
             services.AddSwaggerGen(c =>
