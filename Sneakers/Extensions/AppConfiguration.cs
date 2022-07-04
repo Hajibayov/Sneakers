@@ -18,7 +18,7 @@ namespace Sneakers
             _jwtSecret = root.GetSection("ApplicationSettings").GetSection("jwt_secret").Value;
 
             //ConnectionString
-            _conString = root.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            _conString = root.GetSection("ConnectionStrings").GetSection("DefaultConnectionString").Value;
         }
       
         public string ConnectionString

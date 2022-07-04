@@ -25,8 +25,7 @@ namespace Sneakers.Services.Implementation
                             brd.BRAND as 'Brand'";
 
             string mainPart = @" FROM
-							SNEAKERS_BRAND as brd 
-                            WHERE brd.IS_ACTIVE = 1";
+							SNEAKERS_BRAND as brd ";
 
             string order = " ORDER BY brd.BRAND ASC  ";
             string end = @" OFFSET @skip_val ROWS FETCH NEXT @Limit_val ROWS ONLY ";
