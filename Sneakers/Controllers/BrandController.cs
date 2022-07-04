@@ -35,7 +35,7 @@ namespace Sneakers.Controllers
             _context = context;
         }
 
-        [HttpGet, Route("get-positions")]
+        [HttpGet, Route("get-brands")]
         public IActionResult GetBrands(int limit, int skip, bool isExport)
         {
            
@@ -74,7 +74,7 @@ namespace Sneakers.Controllers
             }
         }
 
-        [HttpGet, Route("get-position")]
+        [HttpGet, Route("get-brand")]
         public IActionResult GetPosition(int id)
         {
         
