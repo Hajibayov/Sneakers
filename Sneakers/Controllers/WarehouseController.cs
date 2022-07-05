@@ -24,6 +24,8 @@ namespace Sneakers.Controllers
             _validation = validation;
         }
 
+
+
         [HttpPost("add-warehouse")]
         public IActionResult AddWarehouse([FromBody] WarehouseVM ware)
         {

@@ -46,7 +46,7 @@ namespace Sneakers.Services.Implementation
             {
                 errorCode = ErrorCode.DB;
                 message = "DB create brand error";
-                _logger.LogError($"BrandService AddPosition : {traceId}" + $"{ex}");
+                _logger.LogError($"BrandService AddBrand : {traceId}" + $"{ex}");
             }
         }
 
@@ -96,8 +96,8 @@ namespace Sneakers.Services.Implementation
             catch (Exception ex)
             {
                 errorCode = ErrorCode.DB;
-                message = "DB get positions error";
-                _logger.LogError($"PositionService GetPositions : {traceId}" + $"{ex}");
+                message = "DB get brands error";
+                _logger.LogError($"BrandService GetBrands : {traceId}" + $"{ex}");
             }
             return response;
         }
@@ -113,8 +113,8 @@ namespace Sneakers.Services.Implementation
             catch (Exception ex)
             {
                 errorCode = ErrorCode.DB;
-                message = "DB get position error";
-                _logger.LogError($"PositionService GetPosition : {traceId}" + $"{ex}");
+                message = "DB get brand error";
+                _logger.LogError($"BrandService GetBrand : {traceId}" + $"{ex}");
             }
             return result;
 

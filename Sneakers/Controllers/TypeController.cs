@@ -2,6 +2,7 @@
 using Sneakers.DTO.HelperModels;
 using Sneakers.DTO.HelperModels.Const;
 using Sneakers.DTO.RequestModel;
+using Sneakers.DTO.ResponseModel.Inner;
 using Sneakers.DTO.ResponseModels.Main;
 using Sneakers.Logging;
 using Sneakers.Services.Interface;
@@ -22,6 +23,81 @@ namespace Sneakers.Controllers
             _typeService = typeService;
             _logger = logger;
             _validation = validation;
+        }
+
+        [HttpGet, Route("get-types")]
+        public IActionResult GetTypes(int limit, int skip, bool isExport)
+        {
+
+            ResponseListTotal<TYPE_VIEW_MODEL> responseList = new ResponseListTotal<TYPE_VIEW_MODEL>();
+            ResponseTotal<TYPE_VIEW_MODEL> response = new ResponseTotal<TYPE_VIEW_MODEL>();
+
+
+            responseList.Response = response;
+            responseList.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
+            responseList.Status = new Status();
+            int errorCode = 0;
+            decimal totalCount = 0;
+            string message = null;
+
+            try
+            {
+                responseList.Response.Data = _typeService.GetTypes(skip, limit, ref totalCount, isExport, ref errorCode, ref message, responseList.TraceID);
+                responseList.Response.Total = totalCount;
+                if (errorCode != 0)
+                {
+                    responseList.Status.ErrCode = errorCode;
+                    responseList.Status.Message = message;
+                    return StatusCode(_validation.CheckErrorCode(errorCode), responseList);
+                }
+                else
+                {
+                    return Ok(responseList);
+                }
+            }
+            catch (Exception ex)
+            {
+                responseList.Status.ErrCode = ErrorCode.SYSTEM;
+                responseList.Status.Message = message;
+                _logger.LogError($"TypeController GetTypes : {responseList.TraceID}" + $"{ex}");
+                return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, responseList);
+            }
+        }
+
+        [HttpGet, Route("get-type")]
+        public IActionResult GetType(int id)
+        {
+
+            ResponseObject<TypeVM> response = new ResponseObject<TypeVM>();
+            response.TraceID = Activity.Current.Id ?? HttpContext.TraceIdentifier;
+            response.Status = new Status();
+            response.Response = new TypeVM();
+
+            int errorCode = 0;
+            string message = null;
+
+            try
+            {
+                response.Response = _typeService.GetType(id, ref errorCode, ref message, response.TraceID);
+
+                if (errorCode != 0)
+                {
+                    response.Status.ErrCode = errorCode;
+                    response.Status.Message = message;
+                    return StatusCode(_validation.CheckErrorCode(errorCode), response);
+                }
+                else
+                {
+                    return Ok(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status.ErrCode = ErrorCode.SYSTEM;
+                response.Status.Message = message;
+                _logger.LogError($"TypeController GetType : {response.TraceID}" + $"{ex}");
+                return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, response);
+            }
         }
 
         [HttpPost("add-type")]

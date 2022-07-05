@@ -71,6 +71,7 @@ namespace Sneakers
             services.AddTransient<ISqlService, SqlService>();
 
 
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sneakers", Version = "v1" });

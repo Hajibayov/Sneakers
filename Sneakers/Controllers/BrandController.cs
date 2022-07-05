@@ -75,7 +75,7 @@ namespace Sneakers.Controllers
         }
 
         [HttpGet, Route("get-brand")]
-        public IActionResult GetPosition(int id)
+        public IActionResult GetBrand(int id)
         {
         
             ResponseObject<BrandVM> response = new ResponseObject<BrandVM>();
