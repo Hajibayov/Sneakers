@@ -4,29 +4,102 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sneakers.DTO.HelperModels.Const;
 using Sneakers.DTO.RequestModel;
+using Sneakers.DTO.ResponseModel.Inner;
 using Sneakers.Infrastructure.Repository;
 using Sneakers.Logging;
 using Sneakers.Models;
 using Sneakers.Services.Interface;
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace Sneakers.Services.Implementation
 {
     public class ModelService : IModelService
     {
-        private AppDbContext _context;
+        AppConfiguration config = new AppConfiguration();
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
         private readonly IRepository<SNEAKERS_MODEL> _models;
+        private readonly ISqlService _sqlService;
 
 
-        public ModelService(AppDbContext context, ILoggerManager logger, IMapper mapper, IRepository<SNEAKERS_MODEL> model)
+        public ModelService(AppDbContext context, ILoggerManager logger, IMapper mapper, IRepository<SNEAKERS_MODEL> model, ISqlService sqlService)
         {
-            _context = context;
             _logger = logger;
             _models = model;
             _mapper = mapper;
+            _sqlService = sqlService;
+
+        }
+        public List<MODEL_VIEW_MODEL> GetModels(int skip, int limit, ref decimal totalCount, bool isExport, ref int errorCode, ref string message, string traceId)
+        {
+            List<MODEL_VIEW_MODEL> response = new List<MODEL_VIEW_MODEL>();
+
+            try
+            {
+                using (SqlConnection con = new SqlConnection(config.ConnectionString))
+                {
+                    SqlCommand cmd;
+                    using (cmd = con.CreateCommand())
+                    {
+                        con.Open();
+
+                        cmd.CommandText = _sqlService.Models(false, isExport, limit, skip);
+                        SqlDataReader rdr = cmd.ExecuteReader();
+
+                        while (rdr.Read())
+                        {
+                            MODEL_VIEW_MODEL model_view_model = new MODEL_VIEW_MODEL()
+                            {
+                                Id = (int)rdr["Id"],
+                                Model = rdr["Model"].ToString(),
+
+                            };
+                            response.Add(model_view_model);
+                        }
+                        rdr.Close();
+                        cmd = con.CreateCommand();
+                        if (!isExport)
+                        {
+                            cmd.CommandText = _sqlService.Models(true, false, limit, skip);
+
+                            rdr = cmd.ExecuteReader();
+
+                            while (rdr.Read())
+                            {
+                                totalCount = (int)rdr["totalCount"];
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                errorCode = ErrorCode.DB;
+                message = "DB get models error";
+                _logger.LogError($"ModelService GetModels : {traceId}" + $"{ex}");
+            }
+            return response;
+        }
+
+        public ModelVM GetModel(int id, ref int errorCode, ref string message, string traceId)
+        {
+            ModelVM result = new ModelVM();
+            try
+            {
+                SNEAKERS_MODEL model = _models.AllQuery.FirstOrDefault(x => x.Id == id);
+                result = _mapper.Map<ModelVM>(model);
+            }
+            catch (Exception ex)
+            {
+                errorCode = ErrorCode.DB;
+                message = "DB get model error";
+                _logger.LogError($"ModelService GetModel : {traceId}" + $"{ex}");
+            }
+            return result;
 
         }
         public void AddModel(ModelVM model, ref int errorCode, ref string message, string traceId)
