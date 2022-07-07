@@ -22,13 +22,6 @@ namespace Sneakers.Controllers
         [HttpGet, Route("brands")]
         public IActionResult Brand()
         {
-            var currentUser = HttpContext.User;
-            bool currentUserRole = Convert.ToBoolean(currentUser.FindFirst("UserRole").Value);
-
-            if (!currentUserRole)
-            {
-                return Unauthorized();
-            }
 
             return Ok(new { Result = _lookupService.GetBrands() });
         }
@@ -36,13 +29,7 @@ namespace Sneakers.Controllers
         [HttpGet, Route("types")]
         public IActionResult Type()
         {
-            var currentUser = HttpContext.User;
-            bool currentUserRole = Convert.ToBoolean(currentUser.FindFirst("UserRole").Value);
-
-            if (!currentUserRole)
-            {
-                return Unauthorized();
-            }
+       
 
             return Ok(new { Result = _lookupService.GetTypes() });
         }
@@ -50,13 +37,7 @@ namespace Sneakers.Controllers
         [HttpGet, Route("sizes")]
         public IActionResult Size()
         {
-            var currentUser = HttpContext.User;
-            bool currentUserRole = Convert.ToBoolean(currentUser.FindFirst("UserRole").Value);
-
-            if (!currentUserRole)
-            {
-                return Unauthorized();
-            }
+         
 
             return Ok(new { Result = _lookupService.GetSizes() });
         }
@@ -64,13 +45,7 @@ namespace Sneakers.Controllers
         [HttpGet, Route("models")]
         public IActionResult Model()
         {
-            var currentUser = HttpContext.User;
-            bool currentUserRole = Convert.ToBoolean(currentUser.FindFirst("UserRole").Value);
-
-            if (!currentUserRole)
-            {
-                return Unauthorized();
-            }
+         
 
             return Ok(new { Result = _lookupService.GetModels() });
         }

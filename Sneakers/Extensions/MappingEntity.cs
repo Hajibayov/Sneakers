@@ -1,6 +1,8 @@
 ﻿using Sneakers.Models;
 using AutoMapper;
 using Sneakers.DTO.RequestModel;
+using TeamControlV2.DTO.ResponseModels.Inner;
+using Sneakers.DTO.ResponseModel.Inner;
 
 namespace Sneakers.Extensions
 {
@@ -15,6 +17,11 @@ namespace Sneakers.Extensions
             CreateMap<WAREHOUSE, WarehouseVM>().ReverseMap();
             CreateMap<EMPLOYEE, EmployeeVM>().ReverseMap();
             CreateMap<SNEAKERS, SneakersVM>().ReverseMap();
+            CreateMap<BRAND_VIEW_MODEL, SNEAKERS_BRAND>().ReverseMap();
+            CreateMap<TYPE_VIEW_MODEL, SNEAKERS_TYPE>().ReverseMap();
+            CreateMap<MODEL_VIEW_MODEL, SNEAKERS_MODEL>().ReverseMap();
+            CreateMap<SIZE_VIEW_MODEL, SIZE>().ReverseMap();
+
 
         }
     }

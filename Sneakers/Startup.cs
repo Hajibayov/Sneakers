@@ -70,6 +70,7 @@ namespace Sneakers
             services.AddTransient<ISneakerService, SneakerService>();
             services.AddTransient<ISqlService, SqlService>();
 
+            services.AddTransient<ILookupService, LookupService>();
 
 
             services.AddSwaggerGen(c =>
