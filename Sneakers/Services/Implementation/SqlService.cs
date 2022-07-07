@@ -1,4 +1,5 @@
-﻿using Sneakers.Services.Interface;
+﻿using Sneakers.DTO.ResponseModel.Inner;
+using Sneakers.Services.Interface;
 using System;
 
 namespace Sneakers.Services.Implementation
@@ -166,6 +167,94 @@ namespace Sneakers.Services.Implementation
             }
 
             return result;
+        }
+
+        public string Sneakers(bool isCount, bool isExport, int limit, int skip, SNEAKER_FILTER_VIEW_MODEL model)
+        {
+            string result = "";
+            string count = @"select COUNT(*) as totalCount";
+            string mainStart = String.Format(
+                            @" 	DECLARE @Skip_val INT 
+	                            SET @Skip_val = {0}
+	                            DECLARE @Limit_val INT 
+	                            SET @Limit_val = {1}
+	                            DECLARE @Brand VARCHAR ( 100 ) 
+	                            SET @Brand = '{2}'
+	                            DECLARE @Model VARCHAR ( 100 )
+	                            SET @Model = '{3}'
+	                            DECLARE @Model VARCHAR ( 100 )
+	                            SET @Type = '{4}' 
+	                            DECLARE @Type VARCHAR ( 100 )
+	                            SET @Type = {5}
+                                 DECLARE @Price INT 
+	                            SET @Price = {6}",
+
+                            skip,
+                            limit,
+                            model.BrandId,
+                            model.ModelId,
+                            model.TypeId,
+                            model.Price
+            );
+            string variables = @" SELECT 
+							snk.ID,
+                            brand.BRAND 'SNEAKERS_BRAND',
+                            model.MODEL 'SNEAKERS_MODEL',
+                            type.TYPE 'SNEAKERS_TYPE',
+                            snk.PRICE' ";
+
+            string cases = " WHERE snk.IS_ACTIVE = 1";
+            filterSneakers(ref cases, model);
+
+
+            string mainPart = @"
+	                from SNEAKERS as snk
+                    left join SNEAKERS_BRAND as brand
+                    on brand.ID = snk.BRAND_ID
+                    left join SNEAKERS_MODEL as model
+                    on model.ID = snk.MODEL_ID
+                    left join SNEAKERS_TYPE as type
+                    on TYPE.ID = snk.TYPE_ID";
+
+            string order = " ORDER BY snk.ID DESC  ";
+
+            string end = @"OFFSET @skip_val ROWS FETCH NEXT @Limit_val ROWS ONLY";
+
+            if (!isCount && !isExport)
+            {
+                result = mainStart + variables + mainPart + cases + order + end;
+            }
+            else if (isCount && !isExport)
+            {
+                result = mainStart + count + mainPart + cases;
+            }
+            else if (!isCount && isExport)
+            {
+                result = mainStart + variables + mainPart + cases + order;
+            }
+            return result;
+        }
+
+        public void filterSneakers(ref string cases, SNEAKER_FILTER_VIEW_MODEL model)
+        {
+
+           
+
+            if (model.BrandId != 0)
+            {
+                cases += " and ";
+                cases += " snk.BRAND_ID = @SneakersBrandId ";
+            }
+            if (model.TypeId != 0)
+            {
+                cases += " and ";
+                cases += " snk.TYPE_ID = @SneakersTypeId ";
+            }
+            if (model.ModelId != 0)
+            {
+                cases += " and ";
+                cases += " snk.MODEL_ID = @SneakersModelId ";
+            }
         }
 
     }

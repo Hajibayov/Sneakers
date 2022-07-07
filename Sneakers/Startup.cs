@@ -67,7 +67,7 @@ namespace Sneakers
             services.AddTransient<IModelService, ModelService>();
             services.AddTransient<IWarehouseService, WarehouseService>();
             services.AddTransient<IEmployeeService, EmployeeService>();
-            services.AddTransient<ISneakersService, SneakersService>();
+            services.AddTransient<ISneakerService, SneakerService>();
             services.AddTransient<ISqlService, SqlService>();
 
 
