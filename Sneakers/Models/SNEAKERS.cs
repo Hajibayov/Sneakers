@@ -8,9 +8,6 @@ namespace Sneakers.Models
         [Column("ID")]
         public int Id { get; set; }
 
-        [Column("WAREHOUSE_ID")]
-        public int WarehouseId { get; set; }
-
         [Column("TYPE_ID")]
         public int TypeId { get; set; }
 

@@ -57,7 +57,7 @@ namespace Sneakers.Controllers
             {
                 response.Status.ErrCode = ErrorCode.SYSTEM;
                 response.Status.Message = message;
-                _logger.LogError($"SizeController AddSize : {response.TraceID}" + $"{ex}");
+                _logger.LogError($"SneakerController AddSneaker : {response.TraceID}" + $"{ex}");
                 return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, response);
             }
             return Ok(response);
