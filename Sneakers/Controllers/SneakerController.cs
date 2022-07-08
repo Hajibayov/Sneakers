@@ -63,7 +63,7 @@ namespace Sneakers.Controllers
             return Ok(response);
         }
 
-        [HttpGet, Route("get-sneakers")]
+        [HttpPost, Route("get-sneakers")]
         public IActionResult GetSneakers([FromBody] SNEAKER_FILTER_VIEW_MODEL model,int limit, int skip, bool isExport)
         {
 
@@ -139,7 +139,7 @@ namespace Sneakers.Controllers
         }
 
         [HttpPost("update_sneaker")]
-        public IActionResult UpdateSneaker( SneakersVM sneaker, int id)
+        public IActionResult UpdateSneaker([FromBody] SneakersVM sneaker, int id)
         {
             ResponseSimple response = new ResponseSimple();
             response.Status = new Status();

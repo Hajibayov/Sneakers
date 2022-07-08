@@ -32,7 +32,6 @@ namespace Sneakers.Models
         [Column("UPDATED_BY")]
         public int? UpdatedBy { get; set; }
 
-        public virtual WAREHOUSE Warehouse { get; set; }
         public virtual SNEAKERS_BRAND Brand { get; set; }
         public virtual SNEAKERS_MODEL Model{ get; set; }
         public virtual SNEAKERS_TYPE Type { get; set; }

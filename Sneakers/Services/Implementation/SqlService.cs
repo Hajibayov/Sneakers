@@ -178,16 +178,14 @@ namespace Sneakers.Services.Implementation
 	                            SET @Skip_val = {0}
 	                            DECLARE @Limit_val INT 
 	                            SET @Limit_val = {1}
-	                            DECLARE @Brand VARCHAR ( 100 ) 
-	                            SET @Brand = '{2}'
-	                            DECLARE @Model VARCHAR ( 100 )
-	                            SET @Model = '{3}'
-	                            DECLARE @Model VARCHAR ( 100 )
-	                            SET @Type = '{4}' 
-	                            DECLARE @Type VARCHAR ( 100 )
-	                            SET @Type = {5}
+	                            DECLARE @Brand INT 
+	                            SET @Brand = {2}
+	                            DECLARE @SneakersModelId INT
+	                            SET @SneakersModelId = {3}
+	                            DECLARE @SneakersTypeId INT
+	                            SET @SneakersTypeId = {4}
                                  DECLARE @Price INT 
-	                            SET @Price = {6}",
+	                            SET @Price = {5}",
 
                             skip,
                             limit,
@@ -198,12 +196,12 @@ namespace Sneakers.Services.Implementation
             );
             string variables = @" SELECT 
 							snk.ID,
-                            brand.BRAND 'SNEAKERS_BRAND',
-                            model.MODEL 'SNEAKERS_MODEL',
-                            type.TYPE 'SNEAKERS_TYPE',
-                            snk.PRICE' ";
+                            brand.BRAND 'BRAND',
+                            model.MODEL 'MODEL',
+                            type.TYPE 'TYPE',
+                            snk.PRICE ";
 
-            string cases = " WHERE snk.IS_ACTIVE = 1";
+            string cases = " ";
             filterSneakers(ref cases, model);
 
 
@@ -243,7 +241,7 @@ namespace Sneakers.Services.Implementation
             if (model.BrandId != 0)
             {
                 cases += " and ";
-                cases += " snk.BRAND_ID = @SneakersBrandId ";
+                cases += " snk.BRAND_ID = @Brand ";
             }
             if (model.TypeId != 0)
             {
