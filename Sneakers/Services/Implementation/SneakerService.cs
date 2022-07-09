@@ -143,18 +143,28 @@ namespace Sneakers.Services.Implementation
 
         public void DeleteSneaker(int id, ref int errorCode, ref string message, string traceId)
         {
+
+            SNEAKERS sneaker = _sneakers.AllQuery.FirstOrDefault(n => n.Id == id);
+
             try
             {
-                SNEAKERS sneaker = _sneakers.AllQuery.FirstOrDefault(x => x.Id == id);
-                sneaker.UpdatedAt = DateTime.Now;
-                _sneakers.Update(sneaker);
-                _sneakers.Save();
+                if (sneaker != null)
+                {
+
+                    _sneakers.Remove(sneaker);
+                    _sneakers.Save();
+                    message = "Bu size uğurla silindi.";
+
+                }
+                else
+                {
+                }
             }
             catch (Exception ex)
             {
                 errorCode = ErrorCode.DB;
-                message = "DB delete sneaker error";
-                _logger.LogError($"SneakerController DeleteSneaker : {traceId}" + $"{ex}");
+                message = "DB delete position error";
+                _logger.LogError($"PositionService DeletePosition : {traceId}" + $"{ex}");
             }
         }
     }
