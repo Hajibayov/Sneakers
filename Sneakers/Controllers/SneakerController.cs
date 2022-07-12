@@ -200,7 +200,7 @@ namespace Sneakers.Controllers
                
                     else
                     {
-                        response.Status.Message = "Sneaker silindi.";
+                        response.Status.Message = "Ayaqqabı silindi.";
                     }
                 
             }

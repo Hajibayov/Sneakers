@@ -124,7 +124,7 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    response.Status.Message = "Yeni size yaradıldı.";
+                    response.Status.Message = "Yeni ölçü yaradıldı.";
                 }
             }
             catch (Exception ex)
@@ -205,7 +205,7 @@ namespace Sneakers.Controllers
                     }
                     else
                     {
-                        response.Status.Message = "Size silindi.";
+                        response.Status.Message = "Ölçü silindi.";
                     }
                 }
             }

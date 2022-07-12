@@ -131,7 +131,7 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    response.Status.Message = "Yeni brand yaradıldı.";
+                    response.Status.Message = "Yeni brend yaradıldı.";
                 }
             }
             catch (Exception ex)
@@ -212,7 +212,7 @@ namespace Sneakers.Controllers
                     }
                     else
                     {
-                        response.Status.Message = "Brand silindi.";
+                        response.Status.Message = "Brend silindi.";
                     }
                 }
             }

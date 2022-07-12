@@ -121,7 +121,7 @@ namespace Sneakers.Controllers
                 }
                 else
                 {
-                    response.Status.Message = "Yeni type yaradıldı.";
+                    response.Status.Message = "Yeni tip yaradıldı.";
                 }
             }
             catch (Exception ex)
@@ -202,7 +202,7 @@ namespace Sneakers.Controllers
                     }
                     else
                     {
-                        response.Status.Message = "Type silindi.";
+                        response.Status.Message = "Tip silindi.";
                     }
                 }
             }

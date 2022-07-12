@@ -153,7 +153,7 @@ namespace Sneakers.Services.Implementation
 
                     _sneakers.Remove(sneaker);
                     _sneakers.Save();
-                    message = "Bu size uğurla silindi.";
+                    message = "Bu ayaqqabı uğurla silindi.";
 
                 }
                 else
